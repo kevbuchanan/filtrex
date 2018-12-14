@@ -64,7 +64,7 @@ defmodule Filtrex.Condition.Number do
         {:error, parse_value_type_error(float, type())}
       allowed_values == nil ->
         {:ok, float}
-      Range.range?(allowed_values) ->
+      is_range(allowed_values) ->
         start..final = allowed_values
         if float >= start and float <= final do
           {:ok, float}
@@ -73,7 +73,7 @@ defmodule Filtrex.Condition.Number do
         end
       is_list(allowed_values) and float in allowed_values ->
         {:ok, float}
-      is_list(allowed_values) and not float in allowed_values ->
+      is_list(allowed_values) and float not in allowed_values ->
         {:error, "Provided number value not allowed"}
     end
   end
@@ -83,12 +83,15 @@ defmodule Filtrex.Condition.Number do
     cond do
       allowed_values == nil or integer in allowed_values ->
         {:ok, integer}
-      not integer in allowed_values ->
+      integer not in allowed_values ->
         {:error, "Provided number value not allowed"}
     end
   end
 
   defp parse_value(_, value), do: {:error, parse_value_type_error(value, type())}
+
+  defp is_range(%Range{}), do: true
+  defp is_range(_), do: false
 
   defimpl Filtrex.Encoder do
     encoder "equals", "does not equal", "column = ?"
