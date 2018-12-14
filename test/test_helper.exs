@@ -22,8 +22,8 @@ Filtrex.Repo.delete_all(Filtrex.SampleModel)
 for {title, {date, time}, rating, upvotes} <- data do
   %Filtrex.SampleModel{
     title: title,
-    date_column: Ecto.Date.from_erl(date),
-    datetime_column: Ecto.DateTime.from_erl({date, time}),
+    date_column: Date.from_erl!(date),
+    datetime_column: NaiveDateTime.from_erl!({date, time}),
     rating: rating,
     upvotes: upvotes
   } |> Filtrex.Repo.insert!
